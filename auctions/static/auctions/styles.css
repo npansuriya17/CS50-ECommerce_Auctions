@@ -1,0 +1,27 @@
+body {
+    padding: 10px;
+}
+
+.listing-img {
+	width: 200px;
+}
+
+.list-table {
+	
+}
+
+#comment-time {
+	font-family:courier;
+	font-size: 100%;
+	color:gray;
+}
+
+#comment-name {
+	color:blue;
+	font-size: 100%;
+}
+
+#comment {
+	
+}
+

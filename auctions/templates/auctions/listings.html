@@ -1,0 +1,112 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Listing
+{% endblock %}
+
+{% block body %}
+    <h2>Listing: {{ item.item_name }}</h2>
+	{% if lastbid == item.current_bid %}
+		{% if not isActive %}
+			<h5 style="color:green;">Congratulations. You won...!!!</h5>
+		{% endif %}
+	{% endif %}
+	<form id="formplacebid" method='post' enctype='multipart/form-data'>
+	{% csrf_token %}
+		<div style='width:100%;height:300px;'>
+			{% if item.reference_image %}
+				<img src="{{ item.reference_image.url }}" width="400" height="280" alt="item image">
+			{% else %}
+				<img height="280" src="https://icon-library.com/images/no-image-available-icon/no-image-available-icon-14.jpg" alt="No image available">
+			{% endif %}</div>
+		<div>{{ item.item_description }}</div>
+		<div>
+			<table><tr>
+				<td><h5>Starting Bid: </h5></td>
+				<td><h4>${{ item.starting_bid }}</h4></td>
+			</tr>
+			<tr>
+				<td><h5>Last Bid: </h5></td>
+				<td><h4 name="textcurrentbid" id="textcurrentbid">${{ item.current_bid }}</h4></td>
+			</tr></table>
+		</div>
+		<div> 
+		{% if lastbid %}
+			Your last bid is: {{ lastbid }}<br>
+		{% endif %}</div>
+		{% if isActive %}
+			<div><input class="form-group" id="textbidvalue" type="text" name="textbidvalue" placeholder="Your Bid" onkeypress="return onlyNumberKey(event)"></div>
+			<div><input class="btn btn-primary" id="btnplacebid" name="btnplacebid" type="submit" value="Place Bid" onclick="validateBid()">
+			{% if isWatchlisted %}
+				<input class="btn btn-primary" id="btnwatchlisted" name="btnwatchlisted" type="submit" value="Remove from Watchlist">
+			{% else %}
+				<input class="btn btn-primary" id="btnwatchlist" name="btnwatchlist" type="submit" value="Add to Watchlist">
+			{% endif %}
+			{% if mylisting %}
+				<input class="btn btn-primary" id="btnclosebid" name="btnclosebid" type="submit" value="Close Bid">
+			{% endif %}
+		{% else %}
+			<h5 style="color:red;">Listing No Longer Active</h5>
+		{% endif %}
+			
+		</div>
+		<div><h4>Details</h4></div>
+		<div><ul>
+			<li>Listed by: {{ item.user }}</li>
+			<li>Category: {{ item.item_category }}</li>
+			<li>Posted on: {{ item.listing_time }}</li>
+		</ul></div>
+	</form>
+	<form id="form-2" method="post">
+	{% csrf_token %}
+		<div><h4>Comments</h4></div>
+		<ul>
+		{% for comment in comments %}
+				<div style="color:blue;font-size:80%;">{{ comment.user }}</div>
+				<div>{{ comment.comment }}</div>
+				<p id="comment-time" style="font-family:sans-serif;font-size:80%;color:gray;">{{ comment.comment_time }}</p>
+		{% endfor %}
+		<div style="color:blue;font-size:80%;">{{ user.username }}</div>
+		<div><textarea id="textcomment" class="form-group" type="textarea" name="textcomment" placeholder="Your Comment"></textarea></div>
+		<div><input id="btncomment" class="btn btn-primary" type="submit" name="btncomment" value="Add Comment"></div>
+		</ul>
+	</form>
+	<script>
+		function validateBid() {
+			var yourbid = parseInt(document.querySelector('#textbidvalue').value);
+			var currentbid = parseInt(document.getElementById("textcurrentbid").innerHTML.substring(1));
+			if (yourbid <= currentbid) {
+				alert("Your bid must be greater than current bid");
+				return false;
+			}		
+		}
+		
+		function onlyNumberKey(evt) {  
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode 
+			if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) 
+				return false; 
+			return true; 
+    } 
+			
+		document.addEventListener('DOMContentLoaded', function() {
+			document.querySelector('#btnplacebid').disabled = true;
+			document.querySelector('#textbidvalue').onkeyup = () => {;
+				if(document.querySelector('#textbidvalue').value.length > 0) {
+					document.querySelector('#btnplacebid').disabled = false;
+				} else {
+					document.querySelector('#btnplacebid').disabled = true;
+				}
+			};
+			
+			document.querySelector('#btncomment').disabled = true;
+			document.querySelector('#textcomment').onkeyup = () => {;
+				if(document.querySelector('#textcomment').value.length > 0) {
+					document.querySelector('#btncomment').disabled = false;
+				} else {
+					document.querySelector('#btncomment').disabled = true;
+				}
+			};
+			
+		});
+		
+	</script>
+{% endblock %}

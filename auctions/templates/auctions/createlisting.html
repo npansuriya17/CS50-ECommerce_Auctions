@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Auctions{% endblock %}
+
+{% block body %}
+    <h2>Create Listing</h2>
+	<form name="listing" method="post" enctype='multipart/form-data'>
+	{% csrf_token %}
+		<table><tr>
+            <td><label for="name">Name:</label></td>
+			<td>{{ form.name }}</td>
+        </tr>
+		</tr>
+            <td><label for="description">Description:</label></td>
+			<td>{{ form.description }}</textarea></td>
+        </tr>
+		<tr>
+			<td><label for="category">Choose a category:</label></td>
+			<td><select class="form-group" name="category" id="category">
+			<option value="" disabled selected>Select a Category</option>
+			{% for eachcategory in allcategories %}
+				<option value="{{ eachcategory.id }}">{{ eachcategory.category }}</option>
+			{% endfor %}
+		</select></td>
+		</tr>
+        <tr>
+			<td><label for="starting_bid">Starting Bid:</label></td>
+            <td>{{ form.starting_bid }}</td>
+        </tr>
+        <tr>
+			<td><label for="image">Upload reference image(if any):</label></td>
+            <td>{{ form.image }}</td>
+        </tr>
+        <tr>
+			<td></td>
+			<td><input id="submit" class="btn btn-primary" type="submit" value="Save"></td>
+		</tr></table>
+	</form>
+
+{% endblock %}
